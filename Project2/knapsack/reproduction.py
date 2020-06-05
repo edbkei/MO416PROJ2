@@ -1,7 +1,8 @@
 import random
-from enum import Enum
+from enum import IntEnum
 
-class ReproductionStrategy(Enum):
+
+class ReproductionStrategy(IntEnum):
     ASEXUAL = 1,
     SEXUAL_SINGLE_POINT = 2,
     SEXUAL_DOUBLE_POINTS = 3

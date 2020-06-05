@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import IntEnum
 
-class ProblemType(Enum):
+class ProblemType(IntEnum):
     MAXIMIZATION = 1,
     MINIMIZATION = 2,
     SOLVING = 3

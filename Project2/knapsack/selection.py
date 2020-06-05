@@ -1,7 +1,8 @@
 import random
-from enum import Enum
+from enum import IntEnum
 
-class SelectionStrategy(Enum):
+
+class SelectionStrategy(IntEnum):
     ROULETTE = 1,
     TOURNAMENT_BATTLE_ROYALE = 2,
     TOURNAMENT_PLAYOFF = 3

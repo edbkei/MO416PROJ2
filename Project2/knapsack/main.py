@@ -1,34 +1,61 @@
-from knapsack.generation import GenerationManager, GenerationStrategy
-from knapsack.genetic_algorithm import GeneticAlgorithmFacade
-from knapsack.mutation import Mutation, MutationStrategy
-from knapsack.problem import KnapsackProblem, ProblemType
-from knapsack.reproduction import Reproduction, ReproductionStrategy
-from knapsack.selection import Selection, SelectionStrategy
+from generation import GenerationStrategy
+from genetic_algorithm import GeneticAlgorithmFacade
+from mutation import MutationStrategy
+from problem import ProblemType
+from reproduction import ReproductionStrategy
+from selection import SelectionStrategy
 
-class Config:
-    def __init__(self):
-        pass
+import matplotlib.pyplot as plt
 
+from knapsack.genetic_algorithm import StopCriteriaType
+
+def plot_fitness(generationsResult):
+    best = list(map(lambda result: result["best"], generationsResult))
+    mean = list(map(lambda result: result["mean"], generationsResult))
+    worst = list(map(lambda result: result["worst"], generationsResult))
+    plt.plot(best, label="best")
+    plt.plot(mean, label="mean")
+    plt.plot(worst, label="worst")
+
+    plt.xlabel("Generation")
+    plt.ylabel("Fitness")
+    plt.title("Knapsack Problem")
+    plt.legend(loc='lower left', frameon=True)
+
+    plt.show()
 
 if __name__ == "__main__":
-    # GA variables
-    generations = 100
-    population_size = 100
-    crossover_probability = 0.8
-    mutation_probability = 0.2
+    config = {
+        'problem' : {
+            'type': ProblemType.MAXIMIZATION,
+            'values': [0, 1],
+            'costs': [100, 350, 200, 90, 500, 250, 220, 360, 150, 700, 400, 230, 550],
+            'weights': [50, 90, 30, 40, 100, 70, 20, 80, 80, 90, 50, 30, 70],
+            'cargo': 600
+        },
+        'selection': {
+            'strategy': SelectionStrategy.ROULETTE
+        },
+        'reproduction': {
+            'strategy': ReproductionStrategy.SEXUAL_SINGLE_POINT,
+            'rate': 0.8
+        },
+        'mutation': {
+            'strategy': MutationStrategy.SEQUENCE_SWAP,
+            'rate': 0.2
+        },
+        'generation': {
+            'strategy': GenerationStrategy.ELITISM,
+            'substituted_population_size': 10,
+            'population_size': 25,
+        },
+        'stop_criteria': {
+            #'fitness': 0,
+            'num_generations': 100,
+            'type': StopCriteriaType.MAX_GENERATIONS
+        }
+    }
 
-    config=Config
-    config.problem=KnapsackProblem(type=ProblemType.MAXIMIZATION,
-                    values=[0, 1],
-                    costs=[100, 350, 200, 90, 500, 250, 220, 360, 150, 700, 400, 230, 550],
-                    weights=[50, 90, 30, 40, 100, 70, 20, 80, 80, 90, 50, 30, 70],
-                    cargo=600)
-    selection=Selection(config.problem, SelectionStrategy.TOURNAMENT_BATTLE_ROYALE)
-    reproduction=Reproduction(ReproductionStrategy.SEXUAL_SINGLE_POINT, crossover_probability)
-    mutation=Mutation(MutationStrategy.GENERATIVE, mutation_probability)
+    generationsResult = GeneticAlgorithmFacade(config).execute()
 
-    config.generation=GenerationManager(config.problem, GenerationStrategy.EXCHANGE, selection, reproduction, mutation)
-    config.population_size=100
-    config.generations=100
-
-    GeneticAlgorithmFacade(config).execute()
+    plot_fitness(generationsResult)

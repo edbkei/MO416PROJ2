@@ -1,7 +1,8 @@
 import random
-from enum import Enum
+from enum import IntEnum
 
-class GenerationStrategy(Enum):
+
+class GenerationStrategy(IntEnum):
     EXCHANGE = 1,
     ELITISM = 2,
     STEADY_STATE = 3
@@ -14,13 +15,13 @@ class GenerationManager:
         self.reproduction = reproduction
         self.mutation = mutation
 
-    def next_generation(self, previous_population, num_new_individuals=None, values=None):
+    def next_generation(self, previous_population, num_new_individuals=None):
         if self.strategy == GenerationStrategy.EXCHANGE:
             return self.by_entire_exchange(previous_population)
         elif self.strategy == GenerationStrategy.ELITISM:
             return self.by_elitism(previous_population)
         elif self.strategy == GenerationStrategy.STEADY_STATE:
-            return self.by_steady_state(previous_population, num_new_individuals, values)
+            return self.by_steady_state(previous_population, num_new_individuals)
         else:
             self.invalid()
 
@@ -39,10 +40,10 @@ class GenerationManager:
             population.append(pop)
         return population
 
-    def make_next_generation(self, previous_population):
+    def make_next_generation(self, previous_population, num_new_individuals=None):
         next_generation = []
         sorted_by_fitness_population = self.sort_population_by_fitness(previous_population)
-        population_size = len(previous_population)
+        population_size = len(previous_population) if num_new_individuals == None else num_new_individuals
 
         while (len(next_generation) < population_size):
             cross_prob = random.random()
@@ -74,13 +75,11 @@ class GenerationManager:
 
         return next_generation
 
-    def by_steady_state(self, previous_population, num_new_individuals, values):
-        next_generation = self.make_next_generation(previous_population)
+    def by_steady_state(self, previous_population, num_new_individuals):
+        next_generation = self.make_next_generation(previous_population, num_new_individuals=num_new_individuals)
 
-        example_individual = next_generation[0]
-        new_individuals = self.generate_population(num_new_individuals, values, len(example_individual))
+        sorted_generation = self.sort_population_by_fitness(previous_population)[:]
+        for i in range(0, num_new_individuals):
+            sorted_generation[i] = next_generation[i]
 
-        for i in range(len(next_generation) - len(new_individuals) - 1, len(next_generation)):
-            next_generation[i] = new_individuals[i - len(next_generation) - len(new_individuals) - 1]
-
-        return next_generation
+        return sorted_generation

@@ -1,11 +1,54 @@
+from enum import IntEnum
+
+from knapsack.generation import GenerationManager
+from knapsack.mutation import Mutation
+from knapsack.problem import KnapsackProblem
+from knapsack.reproduction import Reproduction
+from knapsack.selection import Selection
+from knapsack.stop_criteria import StopCriteriaType, StopCriteria
+
+
+class Config:
+    def __init__(self):
+        pass
+
 class GeneticAlgorithmFacade:
     def __init__(self, config):
-        self.config = config
+        self.config = self.create_configuration(config)
+
+    def create_configuration(self,configDict):
+        config = Config
+        config.problem = KnapsackProblem(type=configDict['problem']['type'],
+                                         values=configDict['problem']['values'],
+                                         costs=configDict['problem']['costs'],
+                                         weights=configDict['problem']['weights'],
+                                         cargo=configDict['problem']['cargo'])
+
+        selection = Selection(config.problem, configDict['selection']['strategy'])
+        reproduction = Reproduction(configDict['reproduction']['strategy'], configDict['reproduction']['rate'])
+        mutation = Mutation(configDict['mutation']['strategy'], configDict['mutation']['rate'])
+        config.generation = GenerationManager(config.problem, configDict['generation']['strategy'],
+                                              selection, reproduction, mutation)
+
+        config.population_size = configDict['generation']['population_size']
+        config.substituted_population_size = self.checkKeyAndReturn(configDict['generation'],
+                                                                    'substituted_population_size')
+
+        config.stop_criteria = StopCriteria(configDict['stop_criteria']['type'],
+                                            self.checkKeyAndReturn(configDict['stop_criteria'], 'num_generations'),
+                                            self.checkKeyAndReturn(configDict['stop_criteria'], 'fitness'))
+
+        return config
+
+    def checkKeyAndReturn(self, dict, key):
+        return dict[key] if key in dict.keys() else None
 
     def execute(self):
         population = self.config.generation.generate_population(self.config.population_size,
                                                                 self.config.problem.values,
                                                                 self.config.problem.population_length)
+        results = []
+        best_individual = None
 
         i = 1
         while True:
@@ -16,8 +59,10 @@ class GeneticAlgorithmFacade:
                       "Cost:", self.config.problem.apply_costs(individual),
                       "Cargo:", self.config.problem.apply_weights(individual))
 
-            best_fitness = self.config.problem.getFitness(self.config.generation.sort_population_by_fitness(population)[-1])
-            worst_fitness = self.config.problem.getFitness(self.config.generation.sort_population_by_fitness(population)[0])
+            sorted_population = self.config.generation.sort_population_by_fitness(population)
+
+            best_fitness = self.config.problem.getFitness(sorted_population[-1])
+            worst_fitness = self.config.problem.getFitness(sorted_population[0])
             mean_fitness = self.config.problem.meanFitness(population)
 
             print()
@@ -26,15 +71,37 @@ class GeneticAlgorithmFacade:
                   "Worst:", worst_fitness)
             print()
 
-            if i == self.config.generations:
+            results.append({
+                'best': best_fitness,
+                'mean': mean_fitness,
+                'worst': worst_fitness
+            })
+
+            if self.stop_criteria(generation=i, fitness=best_fitness):
                 break
 
             i += 1
 
-            population = self.config.generation.next_generation(population)
+            population = self.config.generation.next_generation(population, num_new_individuals=self.config.substituted_population_size)
 
-        best_individual = self.config.generation.sort_population_by_fitness(population)[-1]
+            best_gen_ind = sorted_population[-1]
+            if best_individual == None or self.config.problem.getFitness(best_gen_ind) > self.config.problem.getFitness(best_individual):
+                best_individual = best_gen_ind
+
         print("\nBest choice: ")
         print(best_individual, "Fitness:", self.config.problem.getFitness(best_individual),
                       "Cost:", self.config.problem.apply_costs(best_individual),
                       "Cargo:", self.config.problem.apply_weights(best_individual))
+
+        return results
+
+    def stop_criteria(self, generation=None, fitness=None):
+        if self.config.stop_criteria.type == StopCriteriaType.MAX_GENERATIONS:
+            return generation == self.config.stop_criteria.num_generations
+        elif self.config.stop_criteria.type == StopCriteriaType.MAX_FITNESS:
+            return fitness == self.config.stop_criteria.fitness
+        else:
+            self.invalid()
+
+    def invalid(self):
+        raise Exception("Invalid criteria")
