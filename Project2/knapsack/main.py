@@ -26,7 +26,7 @@ def plot_fitness(generationsResult):
 
 if __name__ == "__main__":
     config = {
-        'problem' : {
+        'problem': {
             'type': ProblemType.MAXIMIZATION,
             'values': [0, 1],
             'costs': [100, 350, 200, 90, 500, 250, 220, 360, 150, 700, 400, 230, 550],
@@ -46,11 +46,11 @@ if __name__ == "__main__":
         },
         'generation': {
             'strategy': GenerationStrategy.ELITISM,
-            'substituted_population_size': 10,
+            #'substituted_population_size': 10, #Used only on STEADY_STATE
             'population_size': 25,
         },
         'stop_criteria': {
-            #'fitness': 0,
+            #'fitness': 0, #Used only on MAX_FITNESS
             'num_generations': 100,
             'type': StopCriteriaType.MAX_GENERATIONS
         }
