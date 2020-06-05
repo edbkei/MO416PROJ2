@@ -29,7 +29,8 @@ class Config:
 
         self.stop_criteria = StopCriteria(configDict['stop_criteria']['type'],
                                           self.checkKeyAndReturn(configDict['stop_criteria'], 'num_generations'),
-                                          self.checkKeyAndReturn(configDict['stop_criteria'], 'fitness'))
+                                          self.checkKeyAndReturn(configDict['stop_criteria'], 'fitness'),
+                                          self.checkKeyAndReturn(configDict['stop_criteria'], 'quorum'))
 
     def checkKeyAndReturn(self, dict, key):
         return dict[key] if key in dict.keys() else None

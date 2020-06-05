@@ -5,11 +5,10 @@ class ProblemType(IntEnum):
     MINIMIZATION = 2
 
 class Problem:
-    def __init__(self, type, values, length, maxFitness=None):
+    def __init__(self, type, values, length):
         self.type = type
         self.values = values
         self.population_length = length
-        self.maxFitness = maxFitness
 
     def getFitness(self, population):
         pass

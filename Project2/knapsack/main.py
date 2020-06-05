@@ -46,13 +46,14 @@ if __name__ == "__main__":
             'rate': 0.2
         },
         'generation': {
-            'strategy': GenerationStrategy.ELITISM,
+            'strategy': GenerationStrategy.EXCHANGE,
             #'substituted_population_size': 10, #Used only on STEADY_STATE
             'population_size': 25,
         },
         'stop_criteria': {
             #'fitness': 0, #Used only on MAX_FITNESS
-            'num_generations': 100,
+            'num_generations': 100, #Used only on MAX_GENERATIONS
+            #'quorum': 0.97,  #Used only on CONVERGENCE
             'type': StopCriteriaType.MAX_GENERATIONS
         }
     })

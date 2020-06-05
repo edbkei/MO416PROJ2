@@ -38,16 +38,16 @@ class GeneticAlgorithmFacade:
                 'worst': worst_fitness
             })
 
-            if self.stop_criteria(generation=i, fitness=best_fitness):
-                break
-
-            i += 1
-
             population = self.config.generation.next_generation(population, num_new_individuals=self.config.substituted_population_size)
 
             best_gen_ind = sorted_population[-1]
             if best_individual == None or self.config.generation.selection.compareFitness(best_gen_ind, best_individual):
                 best_individual = best_gen_ind
+
+            if self.stop_criteria(generation=i, fitness=best_fitness, population=sorted_population):
+                break
+
+            i += 1
 
         print("\nBest choice: ")
         print(best_individual, "Fitness:", self.config.problem.getFitness(best_individual),
@@ -56,11 +56,17 @@ class GeneticAlgorithmFacade:
 
         return results
 
-    def stop_criteria(self, generation=None, fitness=None):
+    def stop_criteria(self, generation=None, fitness=None, population=None):
         if self.config.stop_criteria.type == StopCriteriaType.MAX_GENERATIONS:
             return generation == self.config.stop_criteria.num_generations
         elif self.config.stop_criteria.type == StopCriteriaType.MAX_FITNESS:
             return fitness == self.config.stop_criteria.fitness
+        elif self.config.stop_criteria.type == StopCriteriaType.CONVERGENCE:
+            num_best = round(self.config.stop_criteria.quorum * len(population))
+            count = sum(self.config.problem.getFitness(pop) == fitness for pop in population)
+            print(fitness, num_best, count)
+
+            return count >= num_best
         else:
             self.invalid()
 
