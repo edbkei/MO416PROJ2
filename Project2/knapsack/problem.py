@@ -2,8 +2,7 @@ from enum import IntEnum
 
 class ProblemType(IntEnum):
     MAXIMIZATION = 1,
-    MINIMIZATION = 2,
-    SOLVING = 3
+    MINIMIZATION = 2
 
 class Problem:
     def __init__(self, type, values, length, maxFitness=None):
@@ -35,6 +34,9 @@ class KnapsackProblem(Problem):
         return len(self.costs) == len(individual) \
                and len(self.weights) == len(individual) \
                and self.apply_weights(individual) <= self.cargo
+
+    def is_minimization_problem(self):
+        return self.type == ProblemType.MINIMIZATION
 
     def getFitness(self, individual):
         if (self.validateIndividual(individual)):

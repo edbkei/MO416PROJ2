@@ -29,7 +29,7 @@ class GenerationManager:
         raise Exception("Invalid generation")
 
     def sort_population_by_fitness(self, population):
-        return sorted(population, key=self.problem.getFitness)
+        return sorted(population, key=self.problem.getFitness, reverse=self.problem.is_minimization_problem())
 
     def generate_population(self, size, values, length):
         population = []

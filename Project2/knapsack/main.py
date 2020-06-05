@@ -34,7 +34,7 @@ if __name__ == "__main__":
             'cargo': 600
         },
         'selection': {
-            'strategy': SelectionStrategy.ROULETTE
+            'strategy': SelectionStrategy.TOURNAMENT_BATTLE_ROYALE
         },
         'reproduction': {
             'strategy': ReproductionStrategy.SEXUAL_SINGLE_POINT,

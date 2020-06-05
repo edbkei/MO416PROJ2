@@ -1,6 +1,7 @@
 import random
 from enum import IntEnum
 
+from problem import ProblemType
 
 class SelectionStrategy(IntEnum):
     ROULETTE = 1,
@@ -67,7 +68,7 @@ class Selection:
         best = None
         for i in range(0,len(population)):
             ind = population[i]
-            if (best == None) or self.problem.getFitness(ind) > self.problem.getFitness(best):
+            if (best == None) or self.compareFitness(ind, best):
                 best = ind
 
         return best
@@ -79,12 +80,21 @@ class Selection:
         if num_contestants >= 3:
             finalists = (self.playoff_tournament(population[0:half]), self.playoff_tournament(population[half:num_contestants]))
 
-            return finalists[0] if self.problem.getFitness(finalists[0]) > self.problem.getFitness(finalists[1]) \
-                else finalists[1]
+            return finalists[0] if self.compareFitness(finalists[0], finalists[1]) else finalists[1]
         elif num_contestants == 2:
-            return population[0] if self.problem.getFitness(population[0]) > self.problem.getFitness(population[1]) \
-                else population[1]
+            return population[0] if self.compareFitness(population[0], population[1]) else population[1]
         elif num_contestants == 1:
             return population[0]
 
         return []
+    
+    def compareFitness(self, ind, best):
+        if self.problem.type == ProblemType.MAXIMIZATION:
+            return self.problem.getFitness(ind) > self.problem.getFitness(best)
+        elif self.problem.type == ProblemType.MINIMIZATION:
+            return self.problem.getFitness(ind) < self.problem.getFitness(best)
+        else:
+            self.invalid_problem_type()
+
+    def invalid_problem_type(self):
+        raise Exception("Invalid problem type")

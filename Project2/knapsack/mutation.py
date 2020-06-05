@@ -41,7 +41,6 @@ class Mutation:
 
         return individual
 
-    # TODO verificar algoritmo
     def sequence_swap(self, individual):
         n = len(individual)
         while True:
@@ -54,13 +53,11 @@ class Mutation:
         swapWith = random.choice(remaining)
 
         if swapWith < sequence_swap_init:
-            print(sequence_swap_final)
             individual = [] + individual[0:swapWith]\
                 + individual[sequence_swap_init:sequence_swap_final + 1]\
                 + individual[swapWith:sequence_swap_init]\
                 + individual[(sequence_swap_final + 1):len(individual)]
         else:
-            print(swapWith)
             individual = [] + individual[0:sequence_swap_init]\
                 + individual[(sequence_swap_final + 1):swapWith + 1]\
                 + individual[sequence_swap_init:sequence_swap_final + 1]\

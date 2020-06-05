@@ -1,11 +1,9 @@
-from enum import IntEnum
-
-from knapsack.generation import GenerationManager
-from knapsack.mutation import Mutation
-from knapsack.problem import KnapsackProblem
-from knapsack.reproduction import Reproduction
-from knapsack.selection import Selection
-from knapsack.stop_criteria import StopCriteriaType, StopCriteria
+from generation import GenerationManager
+from mutation import Mutation
+from problem import KnapsackProblem
+from reproduction import Reproduction
+from selection import Selection
+from stop_criteria import StopCriteriaType, StopCriteria
 
 
 class Config:
@@ -85,7 +83,7 @@ class GeneticAlgorithmFacade:
             population = self.config.generation.next_generation(population, num_new_individuals=self.config.substituted_population_size)
 
             best_gen_ind = sorted_population[-1]
-            if best_individual == None or self.config.problem.getFitness(best_gen_ind) > self.config.problem.getFitness(best_individual):
+            if best_individual == None or self.config.generation.selection.compareFitness(best_gen_ind, best_individual):
                 best_individual = best_gen_ind
 
         print("\nBest choice: ")
