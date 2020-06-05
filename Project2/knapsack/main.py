@@ -1,13 +1,14 @@
-from generation import GenerationStrategy
+from config import Config
 from genetic_algorithm import GeneticAlgorithmFacade
+from generation import GenerationStrategy
 from mutation import MutationStrategy
 from problem import ProblemType
 from reproduction import ReproductionStrategy
 from selection import SelectionStrategy
+from stop_criteria import StopCriteriaType
 
 import matplotlib.pyplot as plt
 
-from knapsack.genetic_algorithm import StopCriteriaType
 
 def plot_fitness(generationsResult):
     best = list(map(lambda result: result["best"], generationsResult))
@@ -25,7 +26,7 @@ def plot_fitness(generationsResult):
     plt.show()
 
 if __name__ == "__main__":
-    config = {
+    config = Config({
         'problem': {
             'type': ProblemType.MAXIMIZATION,
             'values': [0, 1],
@@ -54,7 +55,9 @@ if __name__ == "__main__":
             'num_generations': 100,
             'type': StopCriteriaType.MAX_GENERATIONS
         }
-    }
+    })
+
+
 
     generationsResult = GeneticAlgorithmFacade(config).execute()
 

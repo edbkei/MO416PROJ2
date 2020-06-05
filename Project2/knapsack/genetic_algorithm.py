@@ -1,45 +1,8 @@
-from generation import GenerationManager
-from mutation import Mutation
-from problem import KnapsackProblem
-from reproduction import Reproduction
-from selection import Selection
-from stop_criteria import StopCriteriaType, StopCriteria
-
-
-class Config:
-    def __init__(self):
-        pass
+from stop_criteria import StopCriteriaType
 
 class GeneticAlgorithmFacade:
     def __init__(self, config):
-        self.config = self.create_configuration(config)
-
-    def create_configuration(self,configDict):
-        config = Config
-        config.problem = KnapsackProblem(type=configDict['problem']['type'],
-                                         values=configDict['problem']['values'],
-                                         costs=configDict['problem']['costs'],
-                                         weights=configDict['problem']['weights'],
-                                         cargo=configDict['problem']['cargo'])
-
-        selection = Selection(config.problem, configDict['selection']['strategy'])
-        reproduction = Reproduction(configDict['reproduction']['strategy'], configDict['reproduction']['rate'])
-        mutation = Mutation(configDict['mutation']['strategy'], configDict['mutation']['rate'])
-        config.generation = GenerationManager(config.problem, configDict['generation']['strategy'],
-                                              selection, reproduction, mutation)
-
-        config.population_size = configDict['generation']['population_size']
-        config.substituted_population_size = self.checkKeyAndReturn(configDict['generation'],
-                                                                    'substituted_population_size')
-
-        config.stop_criteria = StopCriteria(configDict['stop_criteria']['type'],
-                                            self.checkKeyAndReturn(configDict['stop_criteria'], 'num_generations'),
-                                            self.checkKeyAndReturn(configDict['stop_criteria'], 'fitness'))
-
-        return config
-
-    def checkKeyAndReturn(self, dict, key):
-        return dict[key] if key in dict.keys() else None
+        self.config = config
 
     def execute(self):
         population = self.config.generation.generate_population(self.config.population_size,
