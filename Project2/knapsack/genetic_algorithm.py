@@ -64,7 +64,6 @@ class GeneticAlgorithmFacade:
         elif self.config.stop_criteria.type == StopCriteriaType.CONVERGENCE:
             num_best = round(self.config.stop_criteria.quorum * len(population))
             count = sum(self.config.problem.getFitness(pop) == fitness for pop in population)
-            print(fitness, num_best, count)
 
             return count >= num_best
         else:
