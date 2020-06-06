@@ -1,4 +1,4 @@
-from stop_criteria import StopCriteriaType
+from knapsack. stop_criteria import StopCriteriaType
 
 class GeneticAlgorithmFacade:
     def __init__(self, config):

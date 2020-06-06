@@ -1,9 +1,9 @@
-from generation import GenerationManager
-from mutation import Mutation
-from problem import KnapsackProblem
-from reproduction import Reproduction
-from selection import Selection
-from stop_criteria import StopCriteria
+from knapsack.generation import GenerationManager
+from knapsack.mutation import Mutation
+from knapsack.problem import KnapsackProblem
+from knapsack.reproduction import Reproduction
+from knapsack.selection import Selection
+from knapsack.stop_criteria import StopCriteria
 
 
 class Config:

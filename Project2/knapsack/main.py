@@ -1,11 +1,11 @@
-from config import Config
-from genetic_algorithm import GeneticAlgorithmFacade
-from generation import GenerationStrategy
-from mutation import MutationStrategy
-from problem import ProblemType
-from reproduction import ReproductionStrategy
-from selection import SelectionStrategy
-from stop_criteria import StopCriteriaType
+from knapsack.config import Config
+from knapsack.genetic_algorithm import GeneticAlgorithmFacade
+from knapsack.generation import GenerationStrategy
+from knapsack.mutation import MutationStrategy
+from knapsack.problem import ProblemType
+from knapsack.reproduction import ReproductionStrategy
+from knapsack.selection import SelectionStrategy
+from knapsack.stop_criteria import StopCriteriaType
 
 import matplotlib.pyplot as plt
 

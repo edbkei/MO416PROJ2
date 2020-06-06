@@ -1,7 +1,7 @@
 import random
 from enum import IntEnum
 
-from problem import ProblemType
+from knapsack. problem import ProblemType
 
 class SelectionStrategy(IntEnum):
     ROULETTE = 1,
