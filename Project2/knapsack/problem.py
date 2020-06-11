@@ -3,25 +3,21 @@ from enum import Enum
 class ProblemType(Enum):
     MAXIMIZATION = 1,
     MINIMIZATION = 2,
-    SOLVING = 3
 
 class Problem:
-    def __init__(self, type, values, length, maxFitness, steadyPeriod):
+    def __init__(self, type, values, length):
         self.type = type
         self.values = values
         self.population_length = length
-        self.maxFitness = maxFitness
-        self.steadyPeriod = steadyPeriod
-
     def getFitness(self, population):
         pass
 
 class KnapsackProblem(Problem):
-    def __init__(self, type, values, costs, weights, cargo, maxFitness, steadyPeriod):
+    def __init__(self, type, values, costs, weights, cargo):
         self.costs = costs
         self.weights = weights
         self.cargo = cargo
-        super(KnapsackProblem, self).__init__(type, values, len(self.costs), maxFitness, steadyPeriod)
+        super(KnapsackProblem, self).__init__(type, values, len(self.costs))
         self.validate()
 
     def validate(self):
@@ -36,6 +32,14 @@ class KnapsackProblem(Problem):
         return len(self.costs) == len(individual) \
                and len(self.weights) == len(individual) \
                and self.apply_weights(individual) <= self.cargo
+
+    def is_minimization_problem(self):
+        return self.type ==ProblemType.MINIMIZATION
+
+        for i in range(0, len(population)):
+            total += self.getFitness(population[i])
+
+        return total / len(population)
 
     def getFitness(self, individual):
         if (self.validateIndividual(individual)):
