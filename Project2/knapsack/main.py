@@ -52,9 +52,9 @@ if __name__ == "__main__":
         },
         'stop_criteria': {
             #'fitness': 0, #Used only on MAX_FITNESS
-            'num_generations': 100, #Used only on MAX_GENERATIONS
+            'num_generations': 10, #Used only on MAX_GENERATIONS and STEADY_PERIOD
             #'quorum': 0.97,  #Used only on CONVERGENCE
-            'type': StopCriteriaType.MAX_GENERATIONS
+            'type': StopCriteriaType.STEADY_PERIOD
         }
     })
 
