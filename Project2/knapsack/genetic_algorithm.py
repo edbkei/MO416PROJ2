@@ -11,7 +11,7 @@ class GeneticAlgorithmFacade:
                                                                 self.config.problem.population_length)
         countPeriod=1
         countStop=0
-        print("Processing ...")
+        print("Processing ...generating file1.txt for graphics and file2.txt for detailed population generations")
         i = 1
         while True:
             if(self.config.problem.maxFitness!=0):
