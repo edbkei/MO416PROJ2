@@ -5,20 +5,26 @@ class GeneticAlgorithmFacade:
         self.config = config
 
     def execute(self):
+        fo1=open("file1.txt","w")
+        fo2=open("file2.txt","w")
+
         population = self.config.generation.generate_population(self.config.population_size,
                                                                 self.config.problem.values,
                                                                 self.config.problem.population_length)
         results = []
         best_individual = None
-
         i = 1
+        countPeriod = 1
+        print("Processing ...generating file1.txt for graphics and file2.txt for detailed population generations")
         while True:
-            print(f"Generation {i}")
+            arg="Generation {"+str(i)+"}"+"\n"
+            fo2.write(arg)
 
             for individual in population:
-                print(individual, "Fitness:", self.config.problem.getFitness(individual),
-                      "Cost:", self.config.problem.apply_costs(individual),
-                      "Cargo:", self.config.problem.apply_weights(individual))
+                arg=str(individual)+" Fitness: "+str(self.config.problem.getFitness(individual))+ \
+                      " Cost: "+str(self.config.problem.apply_costs(individual))+ \
+                      " Cargo: "+str(self.config.problem.apply_weights(individual))+"\n"
+                fo2.write(arg)
 
             sorted_population = self.config.generation.sort_population_by_fitness(population)
 
@@ -26,11 +32,14 @@ class GeneticAlgorithmFacade:
             worst_fitness = self.config.problem.getFitness(sorted_population[0])
             mean_fitness = self.config.problem.meanFitness(population)
 
-            print()
-            print("Best:", best_fitness,
-                  "Mean:", mean_fitness,
-                  "Worst:", worst_fitness)
-            print()
+            fo2.write("\n")
+            arg="Best: "+str(best_fitness)+ \
+                " Mean: "+ str(mean_fitness)+ \
+                " Worst: "+ str(worst_fitness)+"\n"
+            fo2.write(arg)
+            fo2.write("\n")
+            arg=str(i)+","+str(best_fitness)+","+str(mean_fitness)+","+str(worst_fitness)+"\n"
+            fo1.write(arg)
 
             results.append({
                 'best': best_fitness,
@@ -41,22 +50,31 @@ class GeneticAlgorithmFacade:
             population = self.config.generation.next_generation(population, num_new_individuals=self.config.substituted_population_size)
 
             best_gen_ind = sorted_population[-1]
+            print(best_gen_ind, self.config.problem.getFitness(best_gen_ind))
+            if best_individual != None: print(best_individual, self.config.problem.getFitness(best_individual))
             if best_individual == None or self.config.generation.selection.compareFitness(best_gen_ind, best_individual):
-                best_individual = best_gen_ind
+                best_individual = best_gen_ind[:]
+                countPeriod = 1
+            else:
+                countPeriod += 1
 
-            if self.stop_criteria(generation=i, fitness=best_fitness, population=sorted_population):
+            if self.stop_criteria(generation=i, period=countPeriod, fitness=best_fitness, population=sorted_population):
                 break
 
             i += 1
 
         print("\nBest choice: ")
-        print(best_individual, "Fitness:", self.config.problem.getFitness(best_individual),
-                      "Cost:", self.config.problem.apply_costs(best_individual),
-                      "Cargo:", self.config.problem.apply_weights(best_individual))
+        print(best_individual, "- Fitness:", self.config.problem.getFitness(best_individual),
+                      "- Cost:", self.config.problem.apply_costs(best_individual),
+                      "- Cargo:", self.config.problem.apply_weights(best_individual),
+                      "- Generations at stop criteria:", countPeriod)
+
+        fo1.close()
+        fo2.close()
 
         return results
 
-    def stop_criteria(self, generation=None, fitness=None, population=None):
+    def stop_criteria(self, generation=None, period=None, fitness=None, population=None):
         if self.config.stop_criteria.type == StopCriteriaType.MAX_GENERATIONS:
             return generation == self.config.stop_criteria.num_generations
         elif self.config.stop_criteria.type == StopCriteriaType.MAX_FITNESS:
@@ -66,6 +84,8 @@ class GeneticAlgorithmFacade:
             count = sum(self.config.problem.getFitness(pop) == fitness for pop in population)
 
             return count >= num_best
+        elif self.config.stop_criteria.type == StopCriteriaType.STEADY_PERIOD:
+            return period == self.config.stop_criteria.num_generations
         else:
             self.invalid()
 
