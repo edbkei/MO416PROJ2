@@ -14,6 +14,7 @@ class GeneticAlgorithmFacade:
         results = []
         best_individual = None
         i = 1
+        countBreak=1
         countPeriod = 1
         print("Processing ...generating file1.txt for graphics and file2.txt for detailed population generations")
         while True:
@@ -59,6 +60,7 @@ class GeneticAlgorithmFacade:
                 countPeriod += 1
 
             if self.stop_criteria(generation=i, period=countPeriod, fitness=best_fitness, population=sorted_population):
+                countBreak=i
                 break
 
             i += 1
@@ -67,7 +69,7 @@ class GeneticAlgorithmFacade:
         print(best_individual, "- Fitness:", self.config.problem.getFitness(best_individual),
                       "- Cost:", self.config.problem.apply_costs(best_individual),
                       "- Cargo:", self.config.problem.apply_weights(best_individual),
-                      "- Generations at stop criteria:", countPeriod)
+                      "- Generations at stop criteria:", countBreak)
 
         fo1.close()
         fo2.close()
