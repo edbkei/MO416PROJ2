@@ -2,7 +2,7 @@ import random
 from enum import IntEnum
 
 class MutationStrategy(IntEnum):
-    GENERATIVE = 1,
+    FLIP = 1,
     SWAP = 2,
     SEQUENCE_SWAP = 3
 
@@ -13,7 +13,7 @@ class Mutation:
 
     def execute(self, individual):
         strategies = {
-            MutationStrategy.GENERATIVE: self.generative(individual),
+            MutationStrategy.FLIP: self.flip(individual),
             MutationStrategy.SWAP: self.swap(individual),
             MutationStrategy.SEQUENCE_SWAP: self.sequence_swap(individual)
         }
@@ -23,7 +23,7 @@ class Mutation:
     def invalid(self):
         raise Exception("Invalid mutation")
 
-    def generative(self, individual):
+    def flip(self, individual):
         n = len(individual)
         c = random.randint(0, n - 1)
         m = random.randint(0, 1)
