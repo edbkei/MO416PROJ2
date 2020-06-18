@@ -13,13 +13,14 @@ class Reproduction:
         self.rate = rate
 
     def execute(self, individual_a, individual_b=None):
-        strategies = {
-            ReproductionStrategy.ASEXUAL: self.duplication(individual_a),
-            ReproductionStrategy.SEXUAL_SINGLE_POINT: self.crossover_single_point(individual_a, individual_b),
-            ReproductionStrategy.SEXUAL_DOUBLE_POINTS: self.crossover_double_points(individual_a, individual_b)
-        }
-
-        return strategies.get(self.strategy, self.invalid)
+        if self.strategy == ReproductionStrategy.ASEXUAL:
+            return self.duplication(individual_a)
+        elif self.strategy == ReproductionStrategy.SEXUAL_SINGLE_POINT:
+            return self.crossover_single_point(individual_a, individual_b)
+        elif self.strategy == ReproductionStrategy.SEXUAL_DOUBLE_POINTS:
+            return self.crossover_double_points(individual_a, individual_b)
+        else:
+            self.invalid()
 
     def invalid(self):
         raise Exception("Invalid reproduction")

@@ -12,13 +12,14 @@ class Mutation:
         self.rate = rate
 
     def execute(self, individual):
-        strategies = {
-            MutationStrategy.FLIP: self.flip(individual),
-            MutationStrategy.SWAP: self.swap(individual),
-            MutationStrategy.SEQUENCE_SWAP: self.sequence_swap(individual)
-        }
-
-        return strategies.get(self.strategy, self.invalid)
+        if self.strategy == MutationStrategy.FLIP:
+            return self.flip(individual)
+        elif self.strategy == MutationStrategy.SWAP:
+            return self.swap(individual)
+        elif self.strategy == MutationStrategy.SEQUENCE_SWAP:
+            return self.sequence_swap(individual)
+        else:
+            self.invalid()
 
     def invalid(self):
         raise Exception("Invalid mutation")

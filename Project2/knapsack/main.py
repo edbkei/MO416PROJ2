@@ -39,11 +39,11 @@ if __name__ == "__main__":
         },
         'reproduction': {
             'strategy': ReproductionStrategy.SEXUAL_SINGLE_POINT,
-            'rate': 0.4
+            'rate': 0.8
         },
         'mutation': {
-            'strategy': MutationStrategy.SEQUENCE_SWAP,
-            'rate': 0.1
+            'strategy': MutationStrategy.FLIP,
+            'rate': 0.5
         },
         'generation': {
             'strategy': GenerationStrategy.EXCHANGE,
@@ -52,9 +52,9 @@ if __name__ == "__main__":
         },
         'stop_criteria': {
             #'fitness': 0, #Used only on MAX_FITNESS
-            #'num_generations': 100, #Used only on MAX_GENERATIONS and STEADY_PERIOD
-            'quorum': 0.95,  #Used only on CONVERGENCE
-            'type': StopCriteriaType.CONVERGENCE
+            'num_generations': 100, #Used only on MAX_GENERATIONS and STEADY_PERIOD
+            #'quorum': 0.97,  #Used only on CONVERGENCE
+            'type': StopCriteriaType.MAX_GENERATIONS
         }
     })
 
