@@ -29,24 +29,7 @@ class GeneticAlgorithmFacade:
 
             sorted_population = self.config.generation.sort_population_by_fitness(population)
 
-            best_fitness = self.config.problem.getFitness(sorted_population[-1])
-            worst_fitness = self.config.problem.getFitness(sorted_population[0])
-            mean_fitness = self.config.problem.meanFitness(population)
-
-            fo2.write("\n")
-            arg="Best: "+str(best_fitness)+ \
-                " Mean: "+ str(mean_fitness)+ \
-                " Worst: "+ str(worst_fitness)+"\n"
-            fo2.write(arg)
-            fo2.write("\n")
-            arg=str(i)+","+str(best_fitness)+","+str(mean_fitness)+","+str(worst_fitness)+"\n"
-            fo1.write(arg)
-
-            results.append({
-                'best': best_fitness,
-                'mean': mean_fitness,
-                'worst': worst_fitness
-            })
+            best_fitness, _, _ = self.add_stats(fo1, fo2, i, sorted_population, results)
 
             population = self.config.generation.next_generation(population, num_new_individuals=self.config.substituted_population_size)
 
@@ -93,3 +76,29 @@ class GeneticAlgorithmFacade:
 
     def invalid(self):
         raise Exception("Invalid criteria")
+
+    def add_stats(self, fo1, fo2, i, sorted_population, results):
+        best_fitness = self.config.problem.getFitness(sorted_population[-1])
+        j = 0
+        worst_fitness = -1
+        while(worst_fitness < 0):
+            worst_fitness = self.config.problem.getFitness(sorted_population[j])
+            j += 1
+        mean_fitness = self.config.problem.meanFitness(sorted_population)
+
+        fo2.write("\n")
+        arg = "Best: " + str(best_fitness) + \
+              " Mean: " + str(mean_fitness) + \
+              " Worst: " + str(worst_fitness) + "\n"
+        fo2.write(arg)
+        fo2.write("\n")
+        arg = str(i) + "," + str(best_fitness) + "," + str(mean_fitness) + "," + str(worst_fitness) + "\n"
+        fo1.write(arg)
+
+        results.append({
+            'best': best_fitness,
+            'mean': mean_fitness,
+            'worst': worst_fitness
+        })
+
+        return best_fitness, mean_fitness, worst_fitness

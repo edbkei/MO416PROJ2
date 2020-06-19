@@ -16,7 +16,7 @@ def plot_fitness(generationsResult):
     worst = list(map(lambda result: result["worst"], generationsResult))
     plt.plot(best, label="best")
     plt.plot(mean, label="mean")
-    plt.plot(worst, label="worst")
+    plt.plot(worst, label="worst (not invalid)")
 
     plt.xlabel("Generation")
     plt.ylabel("Fitness")
@@ -38,12 +38,12 @@ if __name__ == "__main__":
             'strategy': SelectionStrategy.TOURNAMENT_BATTLE_ROYALE
         },
         'reproduction': {
-            'strategy': ReproductionStrategy.SEXUAL_SINGLE_POINT,
+            'strategy': ReproductionStrategy.SEXUAL_DOUBLE_POINTS,
             'rate': 0.8
         },
         'mutation': {
-            'strategy': MutationStrategy.FLIP,
-            'rate': 0.5
+            'strategy': MutationStrategy.SEQUENCE_SWAP,
+            'rate': 0.2
         },
         'generation': {
             'strategy': GenerationStrategy.EXCHANGE,
@@ -52,7 +52,7 @@ if __name__ == "__main__":
         },
         'stop_criteria': {
             #'fitness': 0, #Used only on MAX_FITNESS
-            'num_generations': 100, #Used only on MAX_GENERATIONS and STEADY_PERIOD
+            'num_generations': 300, #Used only on MAX_GENERATIONS and STEADY_PERIOD
             #'quorum': 0.97,  #Used only on CONVERGENCE
             'type': StopCriteriaType.MAX_GENERATIONS
         }
