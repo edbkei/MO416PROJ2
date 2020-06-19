@@ -35,7 +35,6 @@ class GeneticAlgorithmFacade:
 
             best_gen_ind = sorted_population[-1]
             print(best_gen_ind, self.config.problem.getFitness(best_gen_ind))
-            if best_individual != None: print(best_individual, self.config.problem.getFitness(best_individual))
             if best_individual == None or self.config.generation.selection.compareFitness(best_gen_ind, best_individual):
                 best_individual = best_gen_ind[:]
                 countPeriod = 1
